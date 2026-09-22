@@ -42,6 +42,7 @@ import { CatalogModule } from './modules/catalog/catalog.module';
 import { HooksModule } from './core/hooks';
 import { PluginsModule } from './core/plugins';
 import { PluginsApiModule } from './modules/plugins/plugins.module';
+import { VideoSenderModule } from './modules/video-sender/video-sender.module';
 import { AgentToolsModule } from './core/agent-tools/agent-tools.module';
 import { IntegrationModule } from './modules/integration/integration.module';
 import { SearchModule } from './modules/search/search.module';
@@ -293,6 +294,7 @@ if (dashboardServingEnabled && dashboardBuildPresent) {
     EngineModule,
     SessionModule,
     MessageModule,
+    VideoSenderModule,
     TemplateModule,
     WebhookModule,
     HealthModule,

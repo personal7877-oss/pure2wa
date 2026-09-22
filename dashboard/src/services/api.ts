@@ -1426,3 +1426,65 @@ export const statsApi = {
   getOverview: () => request<OverviewStats>('/stats/overview'),
   getMessages: (period: StatsPeriod) => request<MessageStats>(`/stats/messages?period=${period}`),
 };
+
+// =============================================================================
+// Video Sender API (compress via Cloudinary, send as a chat message — not Status)
+// =============================================================================
+
+export interface VideoSenderStartResponse {
+  jobId: string;
+}
+
+export interface VideoSenderRecipientResult {
+  chatId: string;
+  success: boolean;
+  messageId?: string;
+  error?: string;
+}
+
+export interface VideoSenderResult {
+  compressedBytes: number;
+  results: VideoSenderRecipientResult[];
+}
+
+export type VideoSenderStage =
+  | 'queued'
+  | 'uploading'
+  | 'compressing'
+  | 'recompressing'
+  | 'sending'
+  | 'cleaning-up'
+  | 'done'
+  | 'failed';
+
+export interface VideoSenderProgressEvent {
+  jobId: string;
+  stage: VideoSenderStage;
+  message: string;
+  sent?: number;
+  total?: number;
+  timestamp: number;
+}
+
+export const videoSenderApi = {
+  /** Starts compression + send in the background; returns immediately with a job id. */
+  start: (sessionId: string, file: File, chatIds: string[], caption?: string) => {
+    const form = new FormData();
+    form.append('video', file);
+    form.append('chatIds', chatIds.join(','));
+    if (caption) form.append('caption', caption);
+    return request<VideoSenderStartResponse>(`/sessions/${sessionId}/video-sender/send`, {
+      method: 'POST',
+      body: form,
+    });
+  },
+  getResult: (sessionId: string, jobId: string) =>
+    request<VideoSenderResult>(`/sessions/${sessionId}/video-sender/jobs/${jobId}`),
+  /**
+   * Opens the raw SSE URL for a job. The route carries no auth (the job id is an unguessable UUID
+   * acting as its own bearer token), which is what lets this use the browser's native EventSource —
+   * EventSource cannot send custom headers, so an X-API-Key-gated route would be unreachable from it.
+   */
+  eventsUrl: (sessionId: string, jobId: string) =>
+    `${API_BASE_URL}/sessions/${sessionId}/video-sender/jobs/${jobId}/events`,
+};

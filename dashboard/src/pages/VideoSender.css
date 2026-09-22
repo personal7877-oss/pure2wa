@@ -1,0 +1,215 @@
+.video-sender {
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.video-sender .page-header {
+  margin-bottom: 2rem;
+}
+
+.video-sender .page-header p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+}
+
+.video-sender-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.video-sender .compose-panel,
+.video-sender .response-panel {
+  background: var(--bg-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+
+.video-sender .compose-panel h2,
+.video-sender .response-panel h2 {
+  margin-bottom: 1.5rem;
+}
+
+.video-sender .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.video-sender .form-group label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.video-sender .form-group input,
+.video-sender .form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-white);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.video-sender .form-group input:disabled,
+.video-sender .form-group select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.video-sender .hint {
+  display: block;
+  margin-top: 0.375rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.video-sender .browse-btn,
+.video-sender .remove-file-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-white);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.video-sender .browse-btn:disabled,
+.video-sender .remove-file-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.video-sender .file-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+
+.video-sender .file-name {
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-sender .send-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary, #25d366);
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+}
+
+.video-sender .send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.video-sender .response-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  margin-bottom: 1rem;
+}
+
+.video-sender .response-status.success {
+  background: color-mix(in srgb, var(--success) 12%, transparent);
+  color: var(--success);
+}
+
+.video-sender .response-status.error {
+  background: color-mix(in srgb, var(--error) 12%, transparent);
+  color: var(--error);
+}
+
+.video-sender .response-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.video-sender .detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+.video-sender .detail-label {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.video-sender .response-empty {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.vs-progress {
+  margin-bottom: 1.25rem;
+}
+
+.vs-progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.vs-progress-fill {
+  height: 100%;
+  background: var(--primary, #25d366);
+  transition: width 0.4s ease;
+  border-radius: 999px;
+}
+
+.vs-progress-fill.error {
+  background: var(--error);
+}
+
+.vs-progress-line {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .video-sender-panels {
+    grid-template-columns: 1fr;
+  }
+}

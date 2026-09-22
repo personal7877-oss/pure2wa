@@ -1,0 +1,90 @@
+# Render Blueprint for OpenWA + the video-sender module.
+#
+# Deploys as ONE Render Web Service (Docker), using the repo's existing Dockerfile (ffmpeg + every
+# other dependency is already baked in there — no changes needed for this deployment).
+#
+# A 1GB persistent disk holds ONLY the WhatsApp session (Baileys auth) and the SQLite database —
+# video files never touch it, since compression happens on Cloudinary and every asset is deleted
+# right after send. That is what keeps this disk small and cheap.
+#
+# IMPORTANT — read before deploying:
+#   1. This is NOT free-tier-safe. A free Render web service spins down after 15 min of inactivity
+#      AND cannot attach a persistent disk at all, which would silently wipe the WhatsApp session
+#      on every restart. Use at least the Starter plan.
+#   2. Every `sync: false` env var below must be filled in by hand in the Render dashboard after
+#      the first deploy (Cloudinary credentials, the admin API key, etc.) — nothing secret is
+#      committed to this file.
+#   3. BIND_HOST is deliberately left unset here (defaults to 0.0.0.0) — Render's proxy needs the
+#      container listening on all interfaces. This is DIFFERENT from local dev, where BIND_HOST
+#      was locked to 127.0.0.1; that lockdown does not apply here, Render's own network boundary
+#      is what protects this deployment instead.
+#   4. After the first deploy, open the dashboard once and scan the WhatsApp QR. From then on the
+#      session persists across restarts/redeploys via the disk — no repeat scans.
+
+services:
+  - type: web
+    name: openwa
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    region: singapore
+    healthCheckPath: /api/health/ready
+    disk:
+      name: openwa-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      # --- Core ---
+      - key: NODE_ENV
+        value: production
+      - key: ENGINE_TYPE
+        value: baileys
+
+      # --- Security (fill in after first deploy) ---
+      # A stable admin key, so it survives redeploys instead of being freshly auto-generated each
+      # time. Generate one locally, e.g.: node -e "console.log('owa_k1_'+require('crypto').randomBytes(32).toString('hex'))"
+      - key: API_MASTER_KEY
+        sync: false
+      # HMAC pepper for API-key hashing. Generate: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+      - key: API_KEY_PEPPER
+        sync: false
+      # The dashboard's real Vercel URL + custom domain, comma-separated. Update after Vercel is live.
+      - key: CORS_ORIGINS
+        sync: false
+
+      # --- Cloudinary (video-sender module) ---
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # --- Media / request limits (large video sends need headroom over the defaults) ---
+      - key: MEDIA_DOWNLOAD_MAX_BYTES
+        value: '125829120' # 120MB
+      - key: BODY_SIZE_LIMIT
+        value: 160mb
+      - key: INFLIGHT_BODY_BUDGET_BYTES
+        value: '671088640' # 4 x BODY_SIZE_LIMIT
+      - key: REQUEST_TIMEOUT_MS
+        value: '1200000' # 20 min
+      - key: MEDIA_DOWNLOAD_TIMEOUT_MS
+        value: '180000' # 3 min — the engine's own outbound fetch (e.g. from a Cloudinary url)
+
+      # --- Anti-ban (send pacing) ---
+      - key: SEND_PACING_ENABLED
+        value: 'true'
+      - key: SEND_PACING_WARMUP_SCHEDULE
+        value: '20,40,80,160,320,640,1000'
+      - key: SEND_PACING_COLD_DAILY_CAP
+        value: '5,10,20,40,60,80,100'
+      - key: SEND_PACING_BREAKER_THRESHOLD
+        value: '5'
+      - key: SEND_PACING_BREAKER_COOLDOWN_MS
+        value: '900000'
+      - key: SIMULATE_TYPING
+        value: 'true'
+      - key: SIMULATE_TYPING_MAX_MS
+        value: '5000'

@@ -63,6 +63,7 @@
     "templates": "Templates",
     "apiKeys": "API Keys",
     "messageTester": "Message Tester",
+    "videoSender": "Video Sender",
     "infrastructure": "Infrastructure",
     "plugins": "Plugins",
     "logs": "Logs"
@@ -746,6 +747,31 @@
       "cancel": "Cancel Batch",
       "cancelling": "Cancelling..."
     }
+  },
+  "videoSender": {
+    "title": "Video Sender",
+    "subtitle": "Compress a video and send it as a chat message to one or more recipients",
+    "compose": "Send Video",
+    "responseTitle": "Status",
+    "session": "Session",
+    "noReadySessions": "No ready sessions",
+    "sessionOptionPhoneNone": "No phone",
+    "video": "Video",
+    "browse": "Browse...",
+    "removeFile": "Remove",
+    "videoHint": "Compressed via Cloudinary before sending — never stored on this server.",
+    "recipients": "Send to (comma-separated numbers, with country code)",
+    "recipientsHint": "Sent as a normal chat message, not a Status update",
+    "recipientsCount": "{{count}} recipient(s)",
+    "caption": "Caption",
+    "captionPlaceholder": "Optional message caption",
+    "send": "Compress & Send",
+    "sending": "Sending...",
+    "viewOnly": "View only",
+    "sentOk": "Sent",
+    "compressedTo": "Compressed to {{size}} MB",
+    "sendFailed": "Send failed",
+    "responseEmpty": "Progress will appear here once you send a video"
   },
   "infrastructure": {
     "title": "Infrastructure",
